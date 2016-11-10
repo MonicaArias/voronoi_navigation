@@ -2,7 +2,7 @@
 
    <!-- Set Goal -->
   
-  <node pkg="navigation_pro" type="goal_generator_node" name="goal" >	  
+  <node pkg="voronoi_navigation" type="goal_generator_node" name="goal" >	  
 	<param name="goal_px" value="0.2"/>  <!-- x position in meters of the goal -->
 	<param name="goal_py" value="0.0"/>  <!-- x position in meters of the goal -->
 	<param name="goal_oz" value="0.0"/>  <!-- z orientation (quaternion) of the goal -->
