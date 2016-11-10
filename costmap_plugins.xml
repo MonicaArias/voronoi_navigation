@@ -1,0 +1,12 @@
+<class_libraries>
+  <library path="lib/libvoronoi_layer">
+    <class type="voronoi_layer_namespace::VoronoiLayer" base_class_type="costmap_2d::Layer">
+      <description>Voronoi Layer that marks the generalized voronoi diagram</description>
+    </class>
+  </library>
+  <library path="lib/libobstacle_layer">
+    <class type="voronoi_layer_namespace::ObstacleLayer" base_class_type="costmap_2d::Layer">
+      <description>Obstacle Layer for Voronoi</description>
+    </class>
+  </library>
+</class_libraries>

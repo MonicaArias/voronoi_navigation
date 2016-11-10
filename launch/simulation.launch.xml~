@@ -1,0 +1,101 @@
+<launch>
+  
+  <!-- Gazebo Turtlebot simulation -->  
+  <arg name="world_file"  default="$(env TURTLEBOT_GAZEBO_WORLD_FILE)"/>
+  <arg name="base"      value="$(optenv TURTLEBOT_BASE kobuki)"/> <!-- create, roomba -->
+  <arg name="battery"   value="$(optenv TURTLEBOT_BATTERY /proc/acpi/battery/BAT0)"/>  <!-- /proc/acpi/battery/BAT0 --> 
+  <arg name="gui" default="true"/>  
+  <arg name="stacks"    value="$(optenv TURTLEBOT_STACKS hexagons)"/>  <!-- circles, hexagons --> 
+  <arg name="3d_sensor" value="$(optenv TURTLEBOT_3D_SENSOR kinect)"/>  <!-- kinect, asus_xtion_pro --> 
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="world_name" value="$(arg world_file)"/>
+  </include>  
+  <include file="$(find turtlebot_gazebo)/launch/includes/$(arg base).launch.xml">
+    <arg name="base" value="$(arg base)"/>
+    <arg name="stacks" value="$(arg stacks)"/>
+    <arg name="3d_sensor" value="kinect"/>
+  </include>  
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
+
+
+  <!-- RVIZ for the navigation stack -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_rviz_launchers)/rviz/navigation.rviz"/>
+   
+   
+   <!-- Gmapping  -->
+   <!--demo launch file in <include file="$(find turtlebot_navigation)/launch/includes/gmapping.launch.xml"/> -->
+  <arg name="scan_topic"  default="/scan" />
+  <arg name="base_frame"  default="base_footprint"/>
+  <arg name="odom_frame"  default="odom"/>
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+    <param name="base_frame" value="$(arg base_frame)"/>
+    <param name="odom_frame" value="$(arg odom_frame)"/>
+    <param name="map_update_interval" value="5.0"/>
+    <param name="maxUrange" value="6.0"/>
+    <param name="maxRange" value="8.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="minimumScore" value="200"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.5"/>
+    <param name="angularUpdate" value="0.436"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="80"/>    
+    <!-- Parameters to change initial size of the map. -->
+    <param name="xmin" value="-3.0"/>
+    <param name="ymin" value="-3.0"/>
+    <param name="xmax" value="3.0"/>
+    <param name="ymax" value="3.0"/>
+
+    <param name="delta" value="0.05"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+  <!-- Navigation Stack  -->
+  <!--demo launch file in <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/> -->
+
+  <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>  
+  <arg name="global_frame_id" default="map"/>
+  <arg name="odom_topic" default="odom" />  
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find navigation_pro)/param/costmap_global_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find navigation_pro)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />   
+    <rosparam file="$(find navigation_pro)/param/local_costmap_params.yaml" command="load" />   
+    <rosparam file="$(find navigation_pro)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find navigation_pro)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/global_planner_params.yaml" command="load" />
+    <rosparam file="$(find turtlebot_navigation)/param/navfn_global_planner_params.yaml" command="load" />
+    
+    <!-- reset frame_id parameters using user input data -->
+    <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
+    <param name="global_costmap/robot_base_frame" value="$(arg base_frame)"/>
+    <param name="local_costmap/global_frame" value="$(arg odom_frame)"/>
+    <param name="local_costmap/robot_base_frame" value="$(arg base_frame)"/>
+    <param name="DWAPlannerROS/global_frame_id" value="$(arg odom_frame)"/>
+    <remap from="cmd_vel" to="navigation_velocity_smoother/raw_cmd_vel"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+</launch>
