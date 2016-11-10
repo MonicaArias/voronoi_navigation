@@ -1,0 +1,28 @@
+Creating the Hokuyo Description
+Type the super user command: sudo su inside the turtlebot directory which allows modification of the existing files. 
+
+Using the 'Add hokuyo laser' folder, execute the commands marked with '>>': 
+
+1 - Add the hokuyo.urdf.xacro file inside /turtlebot_description/urdf/sensors. 
+>> roscd turtlebot_description/urdf/sensors/
+sudo cat > hokuyo.urdf.xacro
+*copy and paste the contents of hokuyo.urdf.xacro to the terminal and press ctrl+D
+
+
+2 - Replace the existing turtlebot_gazebo.urdf.xacro file inside /turtlebot_description/urdf with the one provided. 
+>> cd ..
+>> sudo gedit turtlebot_gazebo.urdf.xacro
+*replace the contents of the opened file with turtlebot_gazebo.urdf.xacro from these instructions folder and save
+
+
+3 - Replace the existing turtlebot_library.urdf.xacro file inside /turtlebot_description/urdf with the one provided. 
+>> sudo gedit turtlebot_library.urdf.xacro
+*replace the contents of the opened file with turtlebot_library.urdf.xacro from these instructions folder and save
+
+
+4 - Add the kobuki_hexagons_hokuyo.urdf.xacro file inside /turtlebot_description/robots folder. 
+>> cd ..
+>> cd robots/
+>> sudo cat > kobuki_hexagons_hokuyo.urdf.xacro
+*copy and paste the contents of kobuki_hexagons_hokuyo.urdf.xacro to the terminal and press ctrl+D
+
