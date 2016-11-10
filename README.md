@@ -26,3 +26,5 @@ Add the following line to your "costmap_global_common_params.yaml":
 
 
 The launch file "simulation.launch" launches the gazebo simulation of the turtlebot with the navigation stack.
+
+Computation of the voronoi diagram was made with the dynamic voronoi library available at: http://www.cs.utexas.edu/users/qr/software/evg-thin.html
