@@ -19,7 +19,7 @@ such that they look like this:
      - {name: voronoi_layer,          type: "voronoi_layer_namespace::VoronoiLayer"}   
      
 
-Add the following line to your "costmap_global_common_param.yaml":
+Add the following line to your "costmap_global_common_params.yaml":
 
     voronoi_layer:
         enabled:              true
