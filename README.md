@@ -12,8 +12,7 @@ You might have to execute the following command to make the config files executa
 To use in your application, edit the plugins in your "global_costmap_params.yaml" file inside the param folder, 
 such that they look like this: 
 
-   plugins:
-   
+    plugins:  
      - {name: static_layer,            type: "costmap_2d::StaticLayer"} 
      - {name: obstacle_layer,          type: "voronoi_layer_namespace::ObstacleLayer"}          
      - {name: inflation_layer,         type: "costmap_2d::InflationLayer"}      
@@ -22,9 +21,8 @@ such that they look like this:
 
 Add the following line to your "costmap_global_common_param.yaml":
 
-voronoi_layer:
-
-      enabled:              true
+    voronoi_layer:
+        enabled:              true
 
 
 The launch file "simulation.launch" launches the gazebo simulation of the turtlebot with the navigation stack.
